@@ -1,0 +1,279 @@
+<html> 
+<head>
+<script src='web3.min.js'></script>
+<script type="text/javascript">
+var accounts;
+var contractInstance;
+var resultbox;
+
+window.addEventListener('load', async () => {
+        if (window.ethereum) {
+    window.alert('Modern dapp browsers')
+  } else if (window.web3) {
+    alert('Legacy dapp browsers')
+  } else {
+    alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
+  }
+
+  let btn = document.getElementById("btn");
+  btn.addEventListener('click', btnClicked);
+
+  btn = document.getElementById("setMsg2");
+  btn.addEventListener('click', setMsg2Clicked);
+  btn = document.getElementById("setCounter");
+  btn.addEventListener('click', setCounterClicked);
+  btn = document.getElementById("counter");
+  btn.addEventListener('click', counterClicked);
+  btn = document.getElementById("getMsg2");
+  btn.addEventListener('click', getMsg2Clicked);
+  btn = document.getElementById("msg1");
+  btn.addEventListener('click', msg1Clicked);
+  btn = document.getElementById("owner");
+  btn.addEventListener('click', ownerClicked);
+
+  resultbox = document.getElementById("resultbox");
+
+});
+
+async function setMsg2Clicked() {
+  if (contractInstance != null) {
+    try { 
+      let valtxt = document.getElementById("msg2");
+      let val = valtxt.value;
+      let value = await contractInstance.methods.setMsg2(val).send({from:accounts[0]});
+      resultbox.innerHTML = value;
+    } catch (e) {
+      resultbox.innerHTML = "Error Occured: " + e;
+    }
+  }
+
+}
+async function setMsg2Clicked() {
+  if (contractInstance != null) {
+    try {
+      let valtxt = document.getElementById("msg2");
+      let val = valtxt.value;
+      let value = await contractInstance.methods.setMsg2(val).send({from:accounts[0]});
+      resultbox.innerHTML = value;
+    } catch (error) {
+      resultbox.innerHTML = "error occured: " + error;
+    }
+  }
+}
+
+function setCounterClicked() {
+  if (contractInstance != null) {
+    contractInstance.methods.setCounter().send({from:accounts[0]})
+    .on('receipt', function(receipt) {
+      resultbox.innerHTML = "receipt: " + receipt;
+    })
+    .on('confirmation', function(confirmationNumber, receipt) {
+      resultbox.innerHTML = "confirmation: " + confirmationNumber + " & " + receipt;
+    })
+    .on('transactionHash', function(transactionHash) {
+      resultbox.innerHTML = "transactionHash: " + transactionHash;
+    })
+    .on('error', function(error) {
+      resultbox.innerHTML = "error : " + error;
+    }) ;
+  }
+}
+
+async function counterClicked() {
+  const value = await contractInstance.methods.counter().call();
+  resultbox.innerHTML = value;
+}
+
+async function getMsg2Clicked() {
+  const value = await contractInstance.methods.getMsg2().call();
+  resultbox.innerHTML = value;
+}
+
+async function msg1Clicked() {
+  const value = await contractInstance.methods.msg1().call();
+  resultbox.innerHTML = value;
+
+}
+
+async function ownerClicked() {
+  const value = await contractInstance.methods.owner().call();
+  resultbox.innerHTML = value;
+}
+
+async function btnClicked() {
+  accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+  const showAccount = document.querySelector('.showAccount');
+  showAccount.innerHTML = accounts[0];
+  bal = await ethereum.request({ method: 'eth_getBalance' });
+  const showBalance = document.querySelector('.showBalance');
+  showBalance.innerHTML = bal[0];
+  var abiobj = [
+	{
+		"inputs": [],
+		"name": "GoingToNextWeekLotto",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "play",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "raffle",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "payable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
+		"name": "getParticipantsNumber",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getRaffleEtherBalance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "myEtherBalance",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "participants",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "week_ended",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "week_status",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "winner",
+		"outputs": [
+			{
+				"internalType": "address payable",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+  var address = "0x08e58771164D53b83360198bdb6D7F02c0bCc01e";
+  window.web3 = new Web3(window.ethereum);
+  contractInstance = await new window.web3.eth.Contract(abiobj, address);
+  //const value = await contractInstance.methods.counter().call();
+  //alert(value);
+
+}
+</script></head>
+<body>
+<h1> lotto </h1>
+<br/>
+<input type="image" id="btn" src="./img/MetaMask_Fox.svg.png" height="80" width="80" value="Connect to MetaMask">
+<h2>참가비용 : 1 either</h2>
+<h2>Account: <span class="showAccount"></span></h2>
+<h2>My balance: <span class="showBalance"></span></h2>
+
+<input type="button" id="setMsg2" value="setMsg2()">
+<input type="text" id="msg2" value="">
+<br/>
+<input type="button" id="setCounter" value="setCounter()">
+<br/>
+<input type="button" id="counter" value="counter">
+<br/>
+<input type="button" id="getMsg2" value="getMsg2">
+<br/>
+<input type="button" id="msg1" value="msg1">
+<br/>
+<input type="button" id="owner" value="owner">
+<br/>
+Result: <span id="resultbox"> </span>
+</body> </html>
+
