@@ -5,6 +5,7 @@
 var accounts;
 var contractInstance;
 var resultbox;
+let myEtherBalance = 0;
 
 window.addEventListener('load', async () => {
         if (window.ethereum) {
@@ -18,64 +19,68 @@ window.addEventListener('load', async () => {
   let btn = document.getElementById("btn");
   btn.addEventListener('click', btnClicked);
 
-  btn = document.getElementById("setMsg2");
-  btn.addEventListener('click', setMsg2Clicked);
-  btn = document.getElementById("setCounter");
-  btn.addEventListener('click', setCounterClicked);
-  btn = document.getElementById("counter");
-  btn.addEventListener('click', counterClicked);
-  btn = document.getElementById("getMsg2");
-  btn.addEventListener('click', getMsg2Clicked);
-  btn = document.getElementById("msg1");
-  btn.addEventListener('click', msg1Clicked);
-  btn = document.getElementById("owner");
-  btn.addEventListener('click', ownerClicked);
+  btn = document.getElementById("play");
+  btn.addEventListener('click', playClicked);
+
+  btn = document.getElementById("getwinner");
+  btn.addEventListener('click', getwinnerClicked);
+
+  btn = document.getElementById("raffle");
+  btn.addEventListener('click', raffleClicked);
+
+  btn = document.getElementById("next_week");
+  btn.addEventListener('click', nextweekClicked);
+
+  btn = document.getElementById("get_p");
+  btn.addEventListener('click', getPClicked);
+
 
   resultbox = document.getElementById("resultbox");
 
 });
 
-async function setMsg2Clicked() {
-  if (contractInstance != null) {
+
+async function playClicked() {
+    if (contractInstance != null) {
     try { 
-      let valtxt = document.getElementById("msg2");
-      let val = valtxt.value;
-      let value = await contractInstance.methods.setMsg2(val).send({from:accounts[0]});
+      let value = await contractInstance.methods.play().send({from:accounts[0]});
       resultbox.innerHTML = value;
     } catch (e) {
       resultbox.innerHTML = "Error Occured: " + e;
     }
   }
-
+    
 }
-async function setMsg2Clicked() {
-  if (contractInstance != null) {
-    try {
-      let valtxt = document.getElementById("msg2");
-      let val = valtxt.value;
-      let value = await contractInstance.methods.setMsg2(val).send({from:accounts[0]});
+
+
+async function getwinnerClicked() {
+  const value = await contractInstance.methods.winner().call();
+  resultbox.innerHTML = value;
+}
+
+async function getPClicked() {
+  const value = await contractInstance.methods.getParticipantsNumber().call();
+  resultbox.innerHTML = value;
+}
+async function raffleClicked() {
+    if (contractInstance != null) {
+    try { 
+      let value = await contractInstance.methods.raffle().send({from:accounts[0]});
       resultbox.innerHTML = value;
-    } catch (error) {
-      resultbox.innerHTML = "error occured: " + error;
+    } catch (e) {
+      resultbox.innerHTML = "Error Occured: " + e;
     }
   }
 }
 
-function setCounterClicked() {
-  if (contractInstance != null) {
-    contractInstance.methods.setCounter().send({from:accounts[0]})
-    .on('receipt', function(receipt) {
-      resultbox.innerHTML = "receipt: " + receipt;
-    })
-    .on('confirmation', function(confirmationNumber, receipt) {
-      resultbox.innerHTML = "confirmation: " + confirmationNumber + " & " + receipt;
-    })
-    .on('transactionHash', function(transactionHash) {
-      resultbox.innerHTML = "transactionHash: " + transactionHash;
-    })
-    .on('error', function(error) {
-      resultbox.innerHTML = "error : " + error;
-    }) ;
+async function nextweekClicked() {
+    if (contractInstance != null) {
+    try { 
+      let value = await contractInstance.methods.GoingToNextWeekLotto().send({from:accounts[0]});
+      resultbox.innerHTML = value;
+    } catch (e) {
+      resultbox.innerHTML = "Error Occured: " + e;
+    }
   }
 }
 
@@ -104,9 +109,6 @@ async function btnClicked() {
   accounts = await ethereum.request({ method: 'eth_requestAccounts' });
   const showAccount = document.querySelector('.showAccount');
   showAccount.innerHTML = accounts[0];
-  bal = await ethereum.request({ method: 'eth_getBalance' });
-  const showBalance = document.querySelector('.showBalance');
-  showBalance.innerHTML = bal[0];
   var abiobj = [
 	{
 		"inputs": [],
@@ -245,11 +247,10 @@ async function btnClicked() {
 		"type": "function"
 	}
 ];
-  var address = "0x08e58771164D53b83360198bdb6D7F02c0bCc01e";
+  var address = "0xd8b934580fcE35a11B58C6D73aDeE468a2833fa8";
   window.web3 = new Web3(window.ethereum);
   contractInstance = await new window.web3.eth.Contract(abiobj, address);
-  //const value = await contractInstance.methods.counter().call();
-  //alert(value);
+  
 
 }
 </script></head>
@@ -259,20 +260,17 @@ async function btnClicked() {
 <input type="image" id="btn" src="./img/MetaMask_Fox.svg.png" height="80" width="80" value="Connect to MetaMask">
 <h2>참가비용 : 1 either</h2>
 <h2>Account: <span class="showAccount"></span></h2>
-<h2>My balance: <span class="showBalance"></span></h2>
+<!-- <h2>My balance: </h2> -->
 
-<input type="button" id="setMsg2" value="setMsg2()">
-<input type="text" id="msg2" value="">
+<input type="button" id="play" value="play">
 <br/>
-<input type="button" id="setCounter" value="setCounter()">
+<input type="button" id="getwinner" value="당첨자">
 <br/>
-<input type="button" id="counter" value="counter">
+<input type="button" id="raffle" value="추첨">
 <br/>
-<input type="button" id="getMsg2" value="getMsg2">
+<input type="button" id="next_week" value="한번더">
 <br/>
-<input type="button" id="msg1" value="msg1">
-<br/>
-<input type="button" id="owner" value="owner">
+<input type="button" id="get_p" value="참여자 수">
 <br/>
 Result: <span id="resultbox"> </span>
 </body> </html>
