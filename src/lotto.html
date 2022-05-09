@@ -112,29 +112,15 @@ async function btnClicked() {
   var abiobj = [
 	{
 		"inputs": [],
+		"stateMutability": "payable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [],
 		"name": "GoingToNextWeekLotto",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "play",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "raffle",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"stateMutability": "payable",
-		"type": "constructor"
 	},
 	{
 		"inputs": [],
@@ -209,6 +195,20 @@ async function btnClicked() {
 	},
 	{
 		"inputs": [],
+		"name": "play",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "raffle",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
 		"name": "week_ended",
 		"outputs": [
 			{
@@ -247,7 +247,7 @@ async function btnClicked() {
 		"type": "function"
 	}
 ];
-  var address = "0xd8b934580fcE35a11B58C6D73aDeE468a2833fa8";
+  var address = "0xdc3B155B444f481EF599f94BeDa99c1ef7EFEf72";
   window.web3 = new Web3(window.ethereum);
   contractInstance = await new window.web3.eth.Contract(abiobj, address);
   
@@ -258,19 +258,19 @@ async function btnClicked() {
 <h1> lotto </h1>
 <br/>
 <input type="image" id="btn" src="./img/MetaMask_Fox.svg.png" height="80" width="80" value="Connect to MetaMask">
-<h2>참가비용 : 1 either</h2>
+<h2>cost : 1 either</h2>
 <h2>Account: <span class="showAccount"></span></h2>
 <!-- <h2>My balance: </h2> -->
 
 <input type="button" id="play" value="play">
 <br/>
-<input type="button" id="getwinner" value="당첨자">
+<input type="button" id="getwinner" value="winner">
 <br/>
-<input type="button" id="raffle" value="추첨">
+<input type="button" id="raffle" value="Go">
 <br/>
-<input type="button" id="next_week" value="한번더">
+<input type="button" id="next_week" value="One More">
 <br/>
-<input type="button" id="get_p" value="참여자 수">
+<input type="button" id="get_p" value="participants">
 <br/>
 Result: <span id="resultbox"> </span>
 </body> </html>
