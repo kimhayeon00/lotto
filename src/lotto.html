@@ -1,114 +1,55 @@
-<html> 
+<html>
+	<head>
+		<!-- Required meta tags -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+		
+		<link rel="stylesheet" href="style.css">
+	</head>
 <head>
 <script src='web3.min.js'></script>
 <script type="text/javascript">
 var accounts;
-var contractInstance;
+var contractInstance =null;
 var resultbox;
-let myEtherBalance = 0;
+var winner;
+// var balance;
 
 window.addEventListener('load', async () => {
-        if (window.ethereum) {
+    if (window.ethereum) {
     window.alert('Modern dapp browsers')
   } else if (window.web3) {
     alert('Legacy dapp browsers')
   } else {
     alert('Non-Ethereum browser detected. You should consider trying MetaMask!');
   }
-
   let btn = document.getElementById("btn");
-  btn.addEventListener('click', btnClicked);
-
-  btn = document.getElementById("play");
-  btn.addEventListener('click', playClicked);
-
-  btn = document.getElementById("getwinner");
-  btn.addEventListener('click', getwinnerClicked);
-
-  btn = document.getElementById("raffle");
-  btn.addEventListener('click', raffleClicked);
-
-  btn = document.getElementById("next_week");
-  btn.addEventListener('click', nextweekClicked);
-
-  btn = document.getElementById("get_p");
-  btn.addEventListener('click', getPClicked);
-
-
-  resultbox = document.getElementById("resultbox");
+  	btn.addEventListener('click', btnClicked);
+	btn = document.getElementById("play");
+	btn.addEventListener('click', playClicked);
+	btn = document.getElementById("getwinner");
+	btn.addEventListener('click', getwinnerClicked);
+	winner = document.getElementById("winner");
+	btn = document.getElementById("raffle");
+	btn.addEventListener('click', raffleClicked);
+	btn = document.getElementById("next_week");
+	btn.addEventListener('click', nextweekClicked);
+	btn = document.getElementById("get_p");
+	btn.addEventListener('click', getPClicked);
+	resultbox = document.getElementById("resultbox");
+	// balance = document.getElementById("balance");
 
 });
-
-
-async function playClicked() {
-    if (contractInstance != null) {
-    try { 
-      let value = await contractInstance.methods.play().send({from:accounts[0]});
-      resultbox.innerHTML = value;
-    } catch (e) {
-      resultbox.innerHTML = "Error Occured: " + e;
-    }
-  }
-    
-}
-
-
-async function getwinnerClicked() {
-  const value = await contractInstance.methods.winner().call();
-  resultbox.innerHTML = value;
-}
-
-async function getPClicked() {
-  const value = await contractInstance.methods.getParticipantsNumber().call();
-  resultbox.innerHTML = value;
-}
-async function raffleClicked() {
-    if (contractInstance != null) {
-    try { 
-      let value = await contractInstance.methods.raffle().send({from:accounts[0]});
-      resultbox.innerHTML = value;
-    } catch (e) {
-      resultbox.innerHTML = "Error Occured: " + e;
-    }
-  }
-}
-
-async function nextweekClicked() {
-    if (contractInstance != null) {
-    try { 
-      let value = await contractInstance.methods.GoingToNextWeekLotto().send({from:accounts[0]});
-      resultbox.innerHTML = value;
-    } catch (e) {
-      resultbox.innerHTML = "Error Occured: " + e;
-    }
-  }
-}
-
-async function counterClicked() {
-  const value = await contractInstance.methods.counter().call();
-  resultbox.innerHTML = value;
-}
-
-async function getMsg2Clicked() {
-  const value = await contractInstance.methods.getMsg2().call();
-  resultbox.innerHTML = value;
-}
-
-async function msg1Clicked() {
-  const value = await contractInstance.methods.msg1().call();
-  resultbox.innerHTML = value;
-
-}
-
-async function ownerClicked() {
-  const value = await contractInstance.methods.owner().call();
-  resultbox.innerHTML = value;
-}
 
 async function btnClicked() {
   accounts = await ethereum.request({ method: 'eth_requestAccounts' });
   const showAccount = document.querySelector('.showAccount');
   showAccount.innerHTML = accounts[0];
+  let balance = await ethereum.request({ method: 'eth_getBalance', params:[accounts[0]] });
+  balance = parseInt(balance);
+	balance = balance / Math.pow(10,18);
+  const showBalance = document.querySelector('.showBalance');
+  showBalance.innerHTML = balance;
   var abiobj = [
 	{
 		"inputs": [],
@@ -247,31 +188,101 @@ async function btnClicked() {
 		"type": "function"
 	}
 ];
-  var address = "0xdc3B155B444f481EF599f94BeDa99c1ef7EFEf72";
+  var address = "0xAAA91236361044a94E34D07a0D7a1C357CDB942A";
   window.web3 = new Web3(window.ethereum);
   contractInstance = await new window.web3.eth.Contract(abiobj, address);
+
+//   var value = web3.eth.getBalance(accounts[0]);
+// 	balance.innerHTML =value;
+//   let value = web3.eth.getBalance(accounts[0]);
   
 
 }
+
+
+async function playClicked() {
+    if (contractInstance != null) {
+			alert('hi');
+    try {
+      await contractInstance.methods.play().send({from:accounts[0],value: 10**17});
+    } catch (e) {
+      resultbox.innerHTML = "Error Occured: " + e;
+    }
+  }
+}
+
+
+async function getwinnerClicked() {
+  const value = await contractInstance.methods.winner().call();
+  winner.innerHTML = value;
+}
+
+async function getPClicked() {
+  const value = await contractInstance.methods.getParticipantsNumber().call();
+  resultbox.innerHTML = value;
+}
+async function raffleClicked() {
+    if (contractInstance != null) {
+    try {
+      let value = await contractInstance.methods.raffle().send({from:accounts[0]});
+	  resultbox.innerHTML = value;
+
+    } catch (e) {
+      resultbox.innerHTML = "Error Occured: " + e;
+    }
+  }
+}
+
+async function nextweekClicked() {
+    if (contractInstance != null) {
+    try {
+      let value = await contractInstance.methods.GoingToNextWeekLotto().send({from:accounts[0]});
+      resultbox.innerHTML = value;
+    } catch (e) {
+      resultbox.innerHTML = "Error Occured: " + e;
+    }
+  }
+}
+
+async function ownerClicked() {
+  const value = await contractInstance.methods.owner().call();
+  resultbox.innerHTML = value;
+}
+
+
+
 </script></head>
+
 <body>
-<h1> lotto </h1>
+	<center>
+<head><img src="./img/lottoTitle.png"  height="108" width="192" >  </img></head>
 <br/>
-<input type="image" id="btn" src="./img/MetaMask_Fox.svg.png" height="80" width="80" value="Connect to MetaMask">
-<h2>cost : 1 either</h2>
-<h2>Account: <span class="showAccount"></span></h2>
+<!-- <div style="width: 100px; height:200px; float: left;"> -->
+	<input type="image" id="btn" src="./img/MetaMask_Fox.svg.png" height="80" width="80" value="Connect to MetaMask">
+	<!-- </div> -->
+	<div>
+		<div class="info">Account: <span class="showAccount"></span> 
+			<br/>
+		
+		Balance: <span class="showBalance"> </span> </div>
+	</div>
+<br />
+
+<div style="font-size: 30px;">Cost : 0.1 ether</div>
+
 <!-- <h2>My balance: </h2> -->
 
-<input type="button" id="play" value="play">
+<input class="lotto-button" type="button" id="play" value="play">
+
+<input class="lotto-button" type="button" id="raffle" value="Raffle">
 <br/>
-<input type="button" id="getwinner" value="winner">
-<br/>
-<input type="button" id="raffle" value="Go">
+<input type="button" id="getwinner" value="winner"> <span id="winner"> </span>
 <br/>
 <input type="button" id="next_week" value="One More">
 <br/>
 <input type="button" id="get_p" value="participants">
 <br/>
+<br/>
 Result: <span id="resultbox"> </span>
+</center>
 </body> </html>
-
