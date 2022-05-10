@@ -13,6 +13,9 @@ var accounts;
 var contractInstance =null;
 var resultbox;
 var winner;
+var owner;
+var participants;
+var total
 // var balance;
 
 window.addEventListener('load', async () => {
@@ -36,10 +39,17 @@ window.addEventListener('load', async () => {
 	btn.addEventListener('click', nextweekClicked);
 	btn = document.getElementById("get_p");
 	btn.addEventListener('click', getPClicked);
-	resultbox = document.getElementById("resultbox");
+	participants = document.getElementById("participants");
+	btn = document.getElementById("getOwner");
+	btn.addEventListener('click', ownerClicked);
+	owner = document.getElementById("owner");
+	btn = document.getElementById("getTotal");
+	btn.addEventListener('click', total);
+	total = document.getElementById("total");
 	// balance = document.getElementById("balance");
 
 });
+
 
 async function btnClicked() {
   accounts = await ethereum.request({ method: 'eth_requestAccounts' });
@@ -188,26 +198,27 @@ async function btnClicked() {
 		"type": "function"
 	}
 ];
-  var address = "0xAAA91236361044a94E34D07a0D7a1C357CDB942A";
+  var address = "0x0D4F3acdf78B2e74798d3e99E9dCfAf38788c786";
   window.web3 = new Web3(window.ethereum);
   contractInstance = await new window.web3.eth.Contract(abiobj, address);
 
-//   var value = web3.eth.getBalance(accounts[0]);
-// 	balance.innerHTML =value;
-//   let value = web3.eth.getBalance(accounts[0]);
-  
-
 }
-
+async function total() {
+  let value = await contractInstance.methods.getRaffleEtherBalance().call();
+  value = value / Math.pow(10,18);
+  total.innerHTML = value;
+}
 
 async function playClicked() {
     if (contractInstance != null) {
-			alert('hi');
     try {
       await contractInstance.methods.play().send({from:accounts[0],value: 10**17});
     } catch (e) {
       resultbox.innerHTML = "Error Occured: " + e;
     }
+  }
+  else{
+	  alert('Please click the MetaMask')
   }
 }
 
@@ -219,34 +230,60 @@ async function getwinnerClicked() {
 
 async function getPClicked() {
   const value = await contractInstance.methods.getParticipantsNumber().call();
-  resultbox.innerHTML = value;
+  participants.innerHTML = value;
 }
 async function raffleClicked() {
-    if (contractInstance != null) {
-    try {
-      let value = await contractInstance.methods.raffle().send({from:accounts[0]});
-	  resultbox.innerHTML = value;
+	if (contractInstance != null) {
+		if (accounts[0] != await contractInstance.methods.owner().call()){
+			alert('only OWNER')
+		}
+		else{
+			try {
+			let value = await contractInstance.methods.raffle().send({from:accounts[0]});
+			resultbox.innerHTML = value;
+			
+			} catch (e) {
+			resultbox.innerHTML = "Error Occured: " + e;
+		}
 
-    } catch (e) {
-      resultbox.innerHTML = "Error Occured: " + e;
-    }
-  }
+		}
+		
+		
+	}
+	else{
+		alert('Please click the MetaMask')
+
+}
 }
 
 async function nextweekClicked() {
-    if (contractInstance != null) {
-    try {
-      let value = await contractInstance.methods.GoingToNextWeekLotto().send({from:accounts[0]});
-      resultbox.innerHTML = value;
-    } catch (e) {
-      resultbox.innerHTML = "Error Occured: " + e;
-    }
-  }
+	if (contractInstance != null) {
+		if (accounts[0] != await contractInstance.methods.owner().call()){
+			alert('only OWNER')
+		}
+		else{
+			try {
+			let value = await contractInstance.methods.GoingToNextWeekLotto().send({from:accounts[0]});
+			resultbox.innerHTML = value;
+			
+			} catch (e) {
+			resultbox.innerHTML = "Error Occured: " + e;
+		}
+
+		}
+		
+		
+	}
+	else{
+		alert('Please click the MetaMask')
+
 }
+}
+    
 
 async function ownerClicked() {
   const value = await contractInstance.methods.owner().call();
-  resultbox.innerHTML = value;
+  owner.innerHTML = value;
 }
 
 
@@ -266,23 +303,28 @@ async function ownerClicked() {
 		
 		Balance: <span class="showBalance"> </span> </div>
 	</div>
-<br />
-
-<div style="font-size: 30px;">Cost : 0.1 ether</div>
+<h1>Cost : 0.1 ether</h1>
 
 <!-- <h2>My balance: </h2> -->
 
 <input class="lotto-button" type="button" id="play" value="play">
 
 <input class="lotto-button" type="button" id="raffle" value="Raffle">
+
+<input class="lotto-button" type="button" id="next_week" value="One More">
 <br/>
-<input type="button" id="getwinner" value="winner"> <span id="winner"> </span>
+<div class="play_div"><input class="inbtn" type="button" id="getwinner" value="winner"> <span id="winner"> </span>
+	<br/><br/>
+	<input input class="inbtn" type="button" id="get_p" value="participants">  <span id="participants"> </span>
+	<br/><br/>
+	<input input class="inbtn" type="button" id="getOwner" value="owner">  <span id="owner"> </span>
+	<br/><br/>
+	<input input class="inbtn" type="button" id="getTotal" value="total">  <span id="total"> </span> 
+
+</div>	
 <br/>
-<input type="button" id="next_week" value="One More">
-<br/>
-<input type="button" id="get_p" value="participants">
 <br/>
 <br/>
-Result: <span id="resultbox"> </span>
+<!-- Result: <span id="resultbox"> </span> -->
 </center>
 </body> </html>
