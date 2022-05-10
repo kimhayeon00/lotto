@@ -214,7 +214,6 @@ async function playClicked() {
     try {
       await contractInstance.methods.play().send({from:accounts[0],value: 10**17});
     } catch (e) {
-      resultbox.innerHTML = "Error Occured: " + e;
     }
   }
   else{
@@ -234,7 +233,7 @@ async function getPClicked() {
 }
 async function raffleClicked() {
 	if (contractInstance != null) {
-		if (accounts[0] != await contractInstance.methods.owner().call()){
+		if (accounts[0].toLowerCase() != (await contractInstance.methods.owner().call()).toLowerCase()){
 			alert('only OWNER')
 		}
 		else{
@@ -243,7 +242,7 @@ async function raffleClicked() {
 			resultbox.innerHTML = value;
 			
 			} catch (e) {
-			resultbox.innerHTML = "Error Occured: " + e;
+
 		}
 
 		}
@@ -258,7 +257,8 @@ async function raffleClicked() {
 
 async function nextweekClicked() {
 	if (contractInstance != null) {
-		if (accounts[0] != await contractInstance.methods.owner().call()){
+		if (accounts[0].toLowerCase() != (await contractInstance.methods.owner().call()).toLowerCase()){
+			// console.log((await contractInstance.methods.owner().call()).toLowerCase())
 			alert('only OWNER')
 		}
 		else{
@@ -267,7 +267,6 @@ async function nextweekClicked() {
 			resultbox.innerHTML = value;
 			
 			} catch (e) {
-			resultbox.innerHTML = "Error Occured: " + e;
 		}
 
 		}
@@ -292,7 +291,7 @@ async function ownerClicked() {
 
 <body>
 	<center>
-<head><img src="./img/lottoTitle.png"  height="108" width="192" >  </img></head>
+<head><img src="./img/lottoTitle.png"  height="108px" width="192px" >  </img></head>
 <br/>
 <!-- <div style="width: 100px; height:200px; float: left;"> -->
 	<input type="image" id="btn" src="./img/MetaMask_Fox.svg.png" height="80" width="80" value="Connect to MetaMask">
@@ -307,7 +306,7 @@ async function ownerClicked() {
 
 <!-- <h2>My balance: </h2> -->
 
-<input class="lotto-button" type="button" id="play" value="play">
+<input class="lotto-button" type="button" id="play" value="Play">
 
 <input class="lotto-button" type="button" id="raffle" value="Raffle">
 
@@ -322,9 +321,14 @@ async function ownerClicked() {
 	<input input class="inbtn" type="button" id="getTotal" value="total">  <span id="total"> </span> 
 
 </div>	
+
+<div>
+	<img src="./img/madeby.png"  height="216" width="394" >  </img>
+</div>
 <br/>
 <br/>
 <br/>
 <!-- Result: <span id="resultbox"> </span> -->
+
 </center>
 </body> </html>
